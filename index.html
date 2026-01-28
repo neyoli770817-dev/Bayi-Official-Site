@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    
+    <?!= include('Stylesheet'); ?>
+</head>
+
+<body onload="hideLoader()"> <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WDTVTDQJ"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+  <div id="loading-screen">
+    <div class="logo-box">
+        <?!= include('SvgLogo'); ?>
+        <div class="brand-name-loading">八毅活動企劃</div>
+    </div>
+</div>
+
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top bg-dark">
+    <div class="container-fluid d-flex justify-content-between align-items-center">
+        
+        <a class="navbar-brand ms-0" href="#">八毅活動企劃</a>
+
+        <button class="navbar-toggler me-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                <li class="nav-item"><a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#albumModal"><i class="bi bi-images me-1"></i>活動相簿</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">專業服務</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">企業合作</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">關於八毅</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+   <header id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
+    <div class="carousel-inner">
+        
+        <div class="carousel-item active">
+          
+            <div class="hero-bg-layer" style="background-image: url('https://i.postimg.cc/MpZsLrbm/新動_新北投捷運站_3米白_進場.jpg');"></div>
+            <div class="carousel-caption">
+                <h1 class="display-4 fw-bold text-white">專業活動企劃</h1>
+                <p class="lead">打造每一場令人難忘的完美盛宴</p>
+            </div>
+        </div>
+
+        <div class="carousel-item">
+            <div class="hero-bg-layer" style="background-image: url('https://i.postimg.cc/fLFnWQ5b/109915.jpg');"></div>
+            <div class="carousel-caption">
+                <h1 class="display-4 fw-bold text-white">專業舞台架設</h1>
+                <p class="lead">高規格結構安全，呈現最佳視覺效果</p>
+            </div>
+        </div>
+
+        <div class="carousel-item">
+            <div class="hero-bg-layer" style="background-image: url('https://i.postimg.cc/bvt1VQM6/黎國際_三重水樣啵啵_3米白進場7.jpg');"></div>
+            <div class="carousel-caption">
+                <h1 class="display-4 fw-bold text-white">戶外帳篷規劃</h1>
+                <p class="lead">多元帳篷樣式，適應各種天候場地</p>
+            </div>
+        </div>
+
+    </div>
+
+    <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev" style="z-index: 20;">
+        <span class="carousel-control-prev-icon"></span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next" style="z-index: 20;">
+        <span class="carousel-control-next-icon"></span>
+    </button>
+</header>
+        
+<main class="main-wrapper py-5">
+    <div class="row g-0 justify-content-center"> 
+        
+        <div class="col-lg-8 col-12">
+            <h3 class="fw-bold mb-4" style="color: #BA2D30; border-left: 5px solid #BA2D30; padding-left: 15px;">
+                專業服務項目
+            </h3>
+            
+            <div class="row g-3 justify-content-center px-2">
+                <div class="col-12 col-md-4 mb-3">
+                    <div class="card h-100 border-0 shadow-sm glow-card-final" data-bs-toggle="modal" data-bs-target="#equipmentModal" style="cursor: pointer;">
+                        <div class="ratio ratio-4x3">
+                            <img src="https://i.postimg.cc/KzhB61hF/黎國際_漢來飯店_高8桌_進場.jpg" class="card-img-top object-fit-cover">
+                        </div>
+                        <div class="card-body bg-white p-3 text-center">
+                            <h6 class="fw-bold text-dark mb-1">桌椅租賃</h6>
+                            <p class="text-muted mb-0" style="font-size: 0.75rem;">點擊查看 3D 配置模組</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4 mb-3">
+                    <div class="card h-100 border-0 shadow-sm glow-card-final" data-bs-toggle="modal" data-bs-target="#serviceModal" onclick="updateModal('ceremony')" style="cursor: pointer;">
+                        <div class="ratio ratio-4x3">
+                            <img src="https://i.postimg.cc/HLybvQKF/黎國際_三重水樣啵啵_Truss進場.jpg" class="card-img-top object-fit-cover">
+                        </div>
+                        <div class="card-body bg-white p-3 text-center">
+                            <h6 class="fw-bold text-dark mb-1">Truss 結構</h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4 mb-3">
+                    <div class="card h-100 border-0 shadow-sm glow-card-final" data-bs-toggle="modal" data-bs-target="#serviceModal" onclick="updateModal('ceremony')" style="cursor: pointer;">
+                        <div class="ratio ratio-4x3">
+                            <img src="https://i.postimg.cc/90pdtCSX/日坊_竹林山觀音寺_帝王帳_進場.jpg" class="card-img-top object-fit-cover">
+                        </div>
+                        <div class="card-body bg-white p-3 text-center">
+                            <h6 class="fw-bold text-dark mb-1">帳篷設備</h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4 mb-3">
+                    <div class="card h-100 border-0 shadow-sm glow-card-final" data-bs-toggle="modal" data-bs-target="#serviceModal" onclick="updateModal('ceremony')" style="cursor: pointer;">
+                        <div class="ratio ratio-4x3">
+                            <img src="https://i.postimg.cc/N0swp4LW/109886(1).jpg" class="card-img-top object-fit-cover">
+                        </div>
+                        <div class="card-body bg-white p-3 text-center">
+                            <h6 class="fw-bold text-dark mb-1">舞台架設</h6>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4 mb-3">
+                    <div class="card h-100 border-0 shadow-sm glow-card-final" data-bs-toggle="modal" data-bs-target="#serviceModal" onclick="updateModal('ceremony')" style="cursor: pointer;">
+                        <div class="ratio ratio-4x3">
+                            <img src="https://i.postimg.cc/7PGvv4fG/S-18309127.jpg" class="card-img-top object-fit-cover">
+                        </div>
+                        <div class="card-body bg-white p-3 text-center">
+                            <h6 class="fw-bold text-dark mb-1">活動周邊配件</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+  <div class="col-lg-4 col-12 mt-5 mt-lg-0 px-2">
+    <h3 class="fw-bold mb-4" style="color: #BA2D30; border-left: 5px solid #BA2D30; padding-left: 15px;">
+        數位控管系統
+    </h3>
+    
+    <div class="card border-0 shadow-lg glow-card-final mx-auto position-relative" style="border-radius: 15px; overflow: hidden; max-width: 95%;">
+        
+        <div id="auth-overlay" class="d-flex flex-column justify-content-center align-items-center bg-dark text-white p-4" 
+             style="position: absolute; width: 100%; height: 100%; top: 0; left: 0; z-index: 100; opacity: 0; pointer-events: none; transition: 0.5s; backdrop-filter: blur(5px);">
+            
+            <i class="bi bi-shield-lock mb-3" style="font-size: 2rem; color: #BA2D30;"></i>
+            <p class="small mb-2 fw-bold">請輸入您的手機號碼</p> 
+            
+            <div class="input-group mb-2" style="max-width: 200px;">
+                <input type="password" id="access-code" class="form-control form-control-sm border-0" placeholder="手機號碼">
+                <button class="btn btn-danger btn-sm" onclick="checkAccess()">進入</button>
+            </div>
+            <div id="auth-error" class="text-danger small" style="display:none;">* 驗證碼錯誤</div>
+            <button class="btn btn-link btn-sm text-white-50 text-decoration-none" onclick="hideAuth()">取消</button>
+        </div>
+
+        <div class="card-header bg-dark text-white py-3 d-flex justify-content-between align-items-center">
+            <span class="small fw-bold" id="monitor-title">ALIGNMENT MONITOR</span>
+            <span class="badge rounded-pill bg-danger animate-pulse">LIVE</span>
+        </div>
+        
+        <div class="ratio ratio-4x3 bg-black" style="position: relative;">
+            <iframe id="iframe-3d" 
+                src="https://3dwarehouse.sketchup.com/embed/1b90ef55-f425-497c-a26e-444676dd14dd" 
+                frameborder="0" scrolling="no" allowfullscreen
+                style="position: absolute; width: 100%; height: 100%; z-index: 5; border: none; display: block;">
+            </iframe>
+
+            <img src="https://i.postimg.cc/fLFnWQ5b/109915.jpg" 
+                id="img-real" 
+                class="w-100 h-100 object-fit-cover" 
+                style="position: absolute; opacity: 0; z-index: 1; transition: 0.5s;">
+        </div>
+
+        <div class="card-body bg-white p-4">
+            <div class="btn-group w-100 mb-4 shadow-sm">
+                <button id="btn-3d" class="btn btn-danger py-2 fw-bold" onclick="toggleMonitor('3d')">3D實景範例</button>
+                <button id="btn-real" class="btn btn-dark py-2 fw-bold" onclick="toggleMonitor('real')">LIVE實境控場</button>
+            </div>
+
+            <div id="progress-panel" style="display: none; animation: fadeIn 0.5s;">
+                <div class="d-flex justify-content-between mb-1 small">
+                    <span class="fw-bold text-dark">施工進度</span>
+                    <span class="fw-bold text-danger"><span id="progress-num">85</span>%</span>
+                </div>
+                <div class="progress mb-3" style="height: 12px; border-radius: 10px;">
+                    <div id="progress-bar" class="progress-bar progress-bar-striped progress-bar-animated bg-danger" style="width: 85%;"></div>
+                </div>
+                <div class="bg-light p-2 rounded mb-3 text-center border">
+                    <div class="small text-muted">預計完成時間</div>
+                    <div class="fw-bold text-dark" id="finish-time">2024/05/20 18:00</div>
+                </div>
+            </div>
+
+            <div class="list-group list-group-flush text-start">
+                <div class="list-group-item px-0 py-2 border-0 small">
+                    <i class="bi bi-check2-circle text-danger me-2"></i><strong>iPad 現場即時控場中</strong>
+                </div>
+                <div class="list-group-item px-0 py-2 border-0 small">
+                    <i class="bi bi-check2-circle text-danger me-2"></i>同步更新最新進度圖
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="admin-panel" style="display:none; position: fixed; bottom: 20px; right: 20px; z-index: 10000; background: white; padding: 15px; border-radius: 10px; box-shadow: 0 0 20px rgba(0,0,0,0.3); border-top: 5px solid #BA2D30;">
+    <h6 class="fw-bold">控場管理面版</h6>
+    <input type="number" id="set-progress" class="form-control form-control-sm mb-2" placeholder="修改趴數(0-100)">
+    <input type="text" id="set-time" class="form-control form-control-sm mb-2" placeholder="修改時間">
+    <button class="btn btn-danger btn-sm w-100" onclick="updateLiveStatus()">即時套用</button>
+    <button class="btn btn-link btn-sm w-100 text-muted" onclick="document.getElementById('admin-panel').style.display='none'">關閉面板</button>
+</div>
+</main>
+    <section class="social-section">
+        <div class="container">
+            <h3>加入粉絲團</h3>
+            <div class="social-icons">
+                <a href="https://line.me/R/ti/p/@998cnhao" target="_blank" rel="noopener noreferrer"><i class="bi bi-line"></i></a>
+                <a href="#"><i class="bi bi-facebook"></i></a>
+                <a href="#"><i class="bi bi-instagram"></i></a>
+                <a href="#"><i class="bi bi-chat-dots"></i></a> 
+            </div>
+            <p class="mt-4 mb-0" style="opacity: 0.8; font-size: 0.9rem;">&copy; 2025 八毅活動企劃 版權所有</p>
+        </div>
+    </section>
+
+    <div class="modal fade" id="equipmentModal" tabindex="-1">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content shadow-lg">
+                <div class="modal-header bg-dark text-white">
+                    <h5 class="modal-title"><i class="bi bi-box-seam me-2"></i>設備規格 3D 預覽</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <div class="row g-0">
+                        <div class="col-md-3 modal-sidebar">
+                            <div class="list-group list-group-flush" id="model-list">
+                                <button class="list-group-item list-group-item-action active" onclick="switchModel('table', this)">全白會議桌</button>
+                                <button class="list-group-item list-group-item-action" onclick="switchModel('chair_black', this)">黑金剛摺疊椅</button>
+                                <button class="list-group-item list-group-item-action" onclick="switchModel('chair_snack', this)">點心椅</button>
+                            </div>
+                        </div>
+                        <div class="col-md-6 bg-light position-relative">
+                            <model-viewer id="main-viewer" 
+                                src="https://modelviewer.dev/shared-assets/models/WorkshopCtrl.glb" 
+                                auto-rotate camera-controls shadow-intensity="1" 
+                                style="width: 100%; height: 500px; outline: none;">
+                            </model-viewer>
+                            <div class="position-absolute bottom-0 w-100 text-center text-muted small pb-2">
+                                <i class="bi bi-hand-index-thumb"></i> 可拖曳旋轉 / 滾輪縮放
+                            </div>
+                        </div>
+                        <div class="col-md-3 p-4 bg-white">
+                            <h4 id="title-table" class="fw-bold" style="color: #722F37;">長條會議桌</h4>
+                            <hr>
+                            <div id="specs-table" style="line-height: 1.8; color: #555;">
+                                <p><strong>尺寸：</strong> 180 x 60 x 75 cm</p>
+                                <p><strong>材質：</strong> 木質桌面 / 鋼製腳架</p>
+                                <p><strong>特點：</strong> 可摺疊收納，高承重設計，適合各類會議、報到處使用。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+  
+   <div class="modal fade" id="albumModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content" style="border-radius: 15px; border: none; overflow: hidden; background-color: #fff;">
+    
+    <div class="modal-header" style="background-color: #722F37; color: white; border-bottom: none; padding: 1rem 1.5rem;">
+        <h5 class="modal-title fw-bold"><i class="bi bi-grid-3x3-gap-fill me-2"></i>八毅活動現場紀錄</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+    </div>
+
+    <div class="modal-header p-0 bg-light border-bottom">
+        <ul class="nav nav-tabs nav-fill w-100" id="albumTab" role="tablist" style="border: none;">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active py-3 fw-bold custom-tab" id="tab-1" data-bs-toggle="tab" data-bs-target="#pane-1" type="button"
+                  style="color: #722F37 !important;">
+                    桌椅組合
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link py-3 fw-bold custom-tab" id="tab-2" data-bs-toggle="tab" data-bs-target="#pane-2" type="button"
+                style="color: #722F37 !important;">
+                    Truss 結構
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link py-3 fw-bold custom-tab" id="tab-3" data-bs-toggle="tab" data-bs-target="#pane-3" type="button"
+                style="color: #722F37 !important;">
+                    專業帳篷
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link py-3 fw-bold custom-tab" id="tab-4" data-bs-toggle="tab" data-bs-target="#pane-4" type="button"
+                style="color: #722F37 !important;">
+                    舞台工程
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link py-3 fw-bold custom-tab" id="tab-5" data-bs-toggle="tab" data-bs-target="#pane-5" type="button"
+                style="color: #722F37 !important;">
+                    活動佈置
+                </button>
+            </li>
+        </ul>
+    </div>
+
+            <div class="modal-body p-4" style="background-color: #f8f9fa;">
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="pane-1" role="tabpanel">
+            <div class="row g-2" id="gallery-1"></div>
+        </div>
+        
+        <div class="tab-pane fade" id="pane-2" role="tabpanel">
+            <div class="row g-2" id="gallery-2"></div>
+        </div>
+        
+        <div class="tab-pane fade" id="pane-3" role="tabpanel">
+            <div class="row g-2" id="gallery-3"></div>
+        </div>
+
+        <div class="tab-pane fade" id="pane-4" role="tabpanel">
+            <div class="row g-2" id="gallery-4"></div>
+        </div>
+
+        <div class="tab-pane fade" id="pane-5" role="tabpanel">
+            <div class="row g-2" id="gallery-5"></div>
+        </div>
+    </div>
+</div>
+
+<?!= include('JavaScript'); ?>
+
+<div id="imgLightbox" onclick="closeLightbox()" style="display: none; position: fixed; z-index: 10000000 !important; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.95); cursor: zoom-out; justify-content: center; align-items: center; flex-direction: column;">
+    <img id="imgFull" src="" 
+         style="border: 4px solid #fff; 
+                box-shadow: 0 0 50px #000;
+                image-rendering: -webkit-optimize-contrast;
+                max-height: 85vh !important;
+                object-fit: contain;
+                display: block;">
+    <div style="margin-top: 20px; color: white; background: rgba(255,255,255,0.2); padding: 8px 25px; border-radius: 50px; backdrop-filter: blur(5px);">
+        點擊空白處關閉
+    </div>
+</div>
+</body>
+</html>

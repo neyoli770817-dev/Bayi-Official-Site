@@ -1,0 +1,291 @@
+<style>
+/* =========================================
+   1. 全域設定 (Global & Variables)
+   ========================================= */
+:root { 
+    --brand-red: #722F37; /* 品牌酒紅 */
+    --bg-light: #f8f9fa; 
+    --text-dark: #333;
+}
+
+body, html { 
+    font-family: "Microsoft JhengHei", sans-serif; 
+    background-color: var(--bg-light); 
+    margin: 0; 
+    overflow-x: hidden; /* 防止水平卷軸 */
+    width: 100%;
+}
+
+/* 通用工具類 */
+.object-fit-cover { object-fit: cover; }
+.mb-5 { margin-bottom: 3.5rem !important; }
+
+/* =========================================
+   2. 導覽列 (Navbar)
+   ========================================= */
+.navbar { 
+    background-color: var(--brand-red) !important; 
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1); 
+}
+.navbar-brand { 
+    font-weight: 900; 
+    color: white !important; 
+    font-size: 1.5rem; 
+    letter-spacing: 1px; 
+}
+.nav-link { 
+    color: rgba(255,255,255,0.9) !important; 
+    font-weight: 500; 
+}
+
+/* =========================================
+   3. Loading 載入畫面 (修正重複定義與補回動畫)
+   ========================================= */
+#loading-screen {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: #ffffff; z-index: 9999; display: flex;
+    flex-direction: column; justify-content: center; align-items: center;
+    transition: opacity 0.8s ease-out;
+}
+
+.logo-box {
+    width: 220px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-box svg {
+    width: 100%;
+    max-width: 220px;
+    height: auto;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    /* ✅ 補回 Logo 由下往上漸進動畫 */
+    opacity: 0;
+    animation: fadeInUp 1.2s ease-out forwards;
+}
+
+.brand-name-loading { 
+    font-size: 24px; 
+    font-weight: 900; 
+    color: #000; 
+    margin-top: 20px; 
+    letter-spacing: 4px; 
+    opacity: 0; 
+    animation: fadeIn 1s 0.6s forwards; /* 延遲 0.6s 讓文字接在 Logo 後面淡入 */
+    padding-left: 15px; 
+    text-align: center;
+    width: 100%;
+}
+
+@keyframes fadeInUp { 
+    from { opacity: 0; transform: translateY(30px); } 
+    to { opacity: 1; transform: translateY(0); } 
+}
+@keyframes fadeIn { 
+    from { opacity: 0; } 
+    to { opacity: 1; } 
+}
+
+/* =========================================
+   4. Hero 輪播區 (Hero Carousel)
+   ========================================= */
+#heroCarousel {
+    height: 60vh;
+    min-height: 400px;
+    background-color: #000;
+    position: relative;
+    overflow: hidden;
+}
+.carousel-inner, .carousel-item { height: 100%; }
+.hero-carousel-item { height: 60vh; min-height: 450px; }
+
+.hero-bg-layer {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background-size: cover; background-position: center; background-repeat: no-repeat;
+    opacity: 0.7; z-index: 1;
+}
+
+.carousel-caption { z-index: 10; bottom: 25%; }
+.carousel-caption-custom {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center; z-index: 10; width: 80%;
+}
+
+/* =========================================
+   5. 通用容器與版面 (Layout & Main Wrapper)
+   ========================================= */
+.main-wrapper {
+    width: 100% !important;
+    max-width: 100vw;
+    margin: 0 auto !important;
+    padding-left: 15px; 
+    padding-right: 15px;
+}
+
+.section-title { 
+    color: var(--brand-red); font-weight: 900; 
+    margin: 60px 0 40px; text-align: center; letter-spacing: 2px; 
+}
+.section-title::after { 
+    content: ''; display: block; width: 50px; height: 3px; 
+    background: var(--brand-red); margin: 15px auto; 
+}
+
+@media (min-width: 1200px) {
+    .container-fluid, .main-wrapper { 
+        padding-left: 6% !important; padding-right: 6% !important; 
+    }
+    .main-wrapper { 
+        padding-left: 8% !important; padding-right: 8% !important; 
+    }
+}
+
+/* =========================================
+   6. 服務卡片 (Service Cards)
+   ========================================= */
+.container {
+    flex-direction: row; justify-content: center; align-items: flex-start;
+    gap: 20px; width: 100%; max-width: 1200px; margin: 0 auto;
+}
+.card {
+    flex: 1; flex-basis: calc(25% - 20px); min-width: 250px; max-width: 100%; box-sizing: border-box;
+}
+
+.service-card {
+    background: white; border-radius: 12px; overflow: hidden; height: 100%;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: all 0.3s ease;
+    border-bottom: 5px solid transparent; cursor: pointer; text-decoration: none; 
+    color: inherit; display: block; border: none;
+}
+.service-card:hover { 
+    transform: translateY(-8px); 
+    border-bottom: 5px solid var(--brand-red); 
+    box-shadow: 0 15px 30px rgba(0,0,0,0.15); 
+}
+.service-card img { width: 100%; height: 220px; object-fit: cover; }
+.service-card-body { padding: 25px; text-align: center; flex-grow: 1; }
+.service-card-body h5 { color: var(--brand-red); font-weight: bold; margin-bottom: 12px; font-size: 1.2rem; }
+.service-card-body p { font-size: 0.95rem; color: #666; line-height: 1.6; margin: 0; }
+
+/* =========================================
+   7. 堆疊卡片特效 (Stack Cards)
+   ========================================= */
+.stack-container { display: flex; flex-direction: column; width: 100%; }
+
+.stack-card-item { 
+    margin-bottom: -15px; 
+    transition: 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    position: relative; z-index: 1;
+}
+.stack-card-item:hover { transform: translateY(-25px); z-index: 10; }
+
+.custom-stack-card {
+    display: flex; background: white; border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08); overflow: hidden;
+    height: 120px; border: 1px solid #eee;
+}
+.stack-card-item:hover .custom-stack-card {
+    border: 2px solid var(--brand-red);
+    box-shadow: 0 15px 30px rgba(139, 0, 0, 0.15);
+    background: #fffcfc;
+}
+
+.img-wrapper { width: 150px; flex-shrink: 0; }
+.img-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+.card-info { padding: 15px 20px; flex-grow: 1; display: flex; flex-direction: column; justify-content: center; }
+.card-info h5 { margin: 0; font-weight: bold; color: #333; font-size: 1.15rem; }
+.card-info p { margin: 8px 0 0; font-size: 0.85rem; color: #666; line-height: 1.4; }
+
+/* =========================================
+   8. 光效與特殊卡片 (Glow Cards)
+   ========================================= */
+.animate-pulse { animation: pulse-red 2s infinite; }
+@keyframes pulse-red { 
+    0% { opacity: 1; transform: scale(0.95); } 
+    50% { opacity: 0.6; } 
+    100% { opacity: 1; transform: scale(0.95); } 
+}
+
+.glow-card {
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    border: 1px solid rgba(0,0,0,0.05) !important;
+}
+.glow-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(186, 45, 48, 0.25) !important;
+    border-color: rgba(186, 45, 48, 0.4) !important;
+}
+
+/* =========================================
+   9. 相簿與相片標籤 (Album & Tags)
+   ========================================= */
+.album-section { padding: 60px 0; }
+.album-card {
+    background: white; border: 1px solid #e0e0e0; transition: all 0.3s ease;
+    height: 100%; cursor: pointer;
+}
+.album-card:hover { box-shadow: 0 10px 20px rgba(0,0,0,0.1); transform: translateY(-5px); }
+.album-img-wrapper {
+    position: relative; width: 100%; aspect-ratio: 3 / 2;
+    overflow: hidden; border-radius: 12px; transition: all 0.3s ease;
+}
+.album-img { width: 100%; height: 180px; object-fit: cover; transition: transform 0.5s ease; }
+.album-img-wrapper:hover .album-img { transform: scale(1.08); }
+
+.photo-tag {
+    position: absolute; top: 10px; left: 10px;
+    background: rgba(0, 0, 0, 0.65); color: #fff;
+    padding: 3px 10px; font-size: 12px; font-weight: 500;
+    border-radius: 6px; z-index: 5; backdrop-filter: blur(4px);
+}
+
+/* =========================================
+   10. 燈箱 (Lightbox) - 完全保留原本設定
+   ========================================= */
+#imgLightbox {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.95); display: none;
+    align-items: center; justify-content: center; z-index: 10000;
+}
+.lightbox-content {
+    display: flex; width: 95vw; height: 90vh;
+    background: #111; border-radius: 15px; overflow: hidden;
+    position: relative;
+}
+.lightbox-image-side { flex: 1; height: 100%; background: #000; display: flex; align-items: center; justify-content: center; position: relative; }
+.lightbox-image-side img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.lightbox-info-side { flex: 0 0 450px; height: 100%; padding: 50px 35px; background: #1a1a1a; color: white; overflow-y: auto; border-left: 1px solid rgba(255,255,255,0.1); }
+.lightbox-info-side h2 { font-size: 1.8rem !important; font-weight: 700; color: #ff4d4d; margin-bottom: 15px; }
+.info-body p { font-size: 1.35rem !important; line-height: 1.85 !important; color: #f0f0f0; white-space: pre-wrap; }
+
+/* 燈箱按鈕與計數器 */
+.nav-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255, 255, 255, 0.1); color: white; border: none; width: 60px; height: 60px; cursor: pointer; border-radius: 50%; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(5px); z-index: 10; }
+.nav-btn:hover { background: rgba(220, 53, 69, 0.8); }
+.nav-btn.prev { left: 20px; }
+.nav-btn.next { right: 20px; }
+.img-counter { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(10px); color: white; padding: 8px 20px; border-radius: 30px; border: 1px solid rgba(255, 255, 255, 0.2); }
+
+/* =========================================
+   11. 粉絲團區塊 (Social Section) - 完全保留
+   ========================================= */
+.social-section { background-color: var(--brand-red); color: white !important; padding: 60px 0; text-align: center; margin-top: 80px; }
+.social-section h3 { font-weight: 900; margin-bottom: 30px; color: white; }
+.social-icons a { font-size: 3rem; margin: 0 20px; color: white; transition: 0.3s; display: inline-block; }
+.social-icons a:hover { transform: scale(1.1); opacity: 0.8; }
+
+/* =========================================
+   12. RWD 手機版修正 - 完全保留
+   ========================================= */
+@media (max-width: 768px) {
+    .lightbox-content { flex-direction: column !important; width: 100vw !important; height: 100vh !important; border-radius: 0 !important; overflow-y: auto !important; }
+    .lightbox-image-side { height: 50vh !important; width: 100% !important; }
+    .lightbox-info-side { flex: 1 !important; width: 100% !important; padding: 30px 20px !important; border-left: none !important; }
+    .close-btn { position: fixed !important; top: 15px !important; right: 15px !important; z-index: 99999 !important; background: rgba(0, 0, 0, 0.6) !important; }
+}
+</style>

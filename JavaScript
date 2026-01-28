@@ -1,0 +1,837 @@
+<script>
+  // 1. 自動產生 App 設定檔 (Manifest)
+  const manifest = {
+    "name": "八毅活動工程官網",
+    "short_name": "八毅官網",
+    "display": "standalone",
+    "start_url": window.location.href,
+    "background_color": "#000000",
+    "theme_color": "#000000",
+    "icons": [{
+      "src": "https://i.postimg.cc/xxx/logo.png", // 這裡建議放你的 Logo 網址
+      "sizes": "192x192",
+      "type": "image/png"
+    }]
+  };
+  
+  const stringManifest = JSON.stringify(manifest);
+  const blob = new Blob([stringManifest], {type: 'application/json'});
+  const manifestURL = URL.createObjectURL(blob);
+  const link = document.createElement('link');
+  link.rel = 'manifest';
+  link.href = manifestURL;
+  document.head.appendChild(link);
+
+  // 2. 註冊一個空的 Service Worker (騙過瀏覽器安裝檢查)
+  if ('serviceWorker' in navigator) {
+    const swCode = "self.addEventListener('fetch', function(event) {});";
+    const swBlob = new Blob([swCode], {type: 'text/javascript'});
+    const swUrl = URL.createObjectURL(swBlob);
+    navigator.serviceWorker.register(swUrl);
+  }
+</script>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('<?= ScriptApp.getService().getUrl() ?>?page=sw').then(function(registration) {
+        console.log('ServiceWorker 註冊成功');
+      }, function(err) {
+        console.log('ServiceWorker 註冊失敗: ', err);
+      });
+    });
+  }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.3.0/model-viewer.min.js"></script>
+
+<script>
+// ==========================================
+// 1. 資料定義區 (相簿分類請填入 ID)
+// ==========================================
+const modelData = {
+    'table': {
+        src: 'https://modelviewer.dev/shared-assets/models/WorkshopCtrl.glb',
+        title: '會議桌',
+        specs: '<p><strong>尺寸：</strong> 180 x 60 x 75 cm</p><p><strong>材質：</strong> 木質桌面 / 鋼製腳架</p><p><strong>特點：</strong> 可摺疊收納，適合各類會議、報到處使用。</p>'
+    },
+    'chair_black': {
+        src: 'https://modelviewer.dev/shared-assets/models/glTF-Sample-Assets/Models/SheenChair/glTF-Binary/SheenChair.glb',
+        title: '黑金剛摺疊椅',
+        specs: '<p><strong>尺寸：</strong> 45 x 45 x 80 cm</p><p><strong>材質：</strong> 強化塑鋼 / 黑鐵烤漆</p><p><strong>特點：</strong> 經典耐用，適合戶外流水席、大型集會。</p>'
+    },
+    'chair_snack': {
+        src: 'https://modelviewer.dev/shared-assets/models/glTF-Sample-Assets/Models/StrozziChair/glTF-Binary/StrozziChair.glb',
+        title: '點心椅',
+        specs: '<p><strong>尺寸：</strong> 50 x 52 x 85 cm</p><p><strong>材質：</strong> 透氣網布 / 鋁合金</p><p><strong>特點：</strong> 人體工學設計，適合貴賓區、長時間久坐。</p>'
+    }
+};
+
+let photos_Tables = ["mk9LxTzv", "kGFc1xVC", "MK551m2x", "NMvm3Kvg", "T29PC76C", "Y23YP2XZ", "153w1x21", "GhJmRp8C"]; 
+let photos_Truss  = ["3rs5P7dS", "XYgRGCxL", "x1jsZFy6", "5yMgSP24", "fTgGBXgN", "JzdQ27hr", "Nfs7G29h"]; 
+let photos_Tent   = ["P5dcjqhX", "RhzdLPZN", "VL8ZqNSy", "Kv2pPY16", "L6WTrsVV", "bvt1VQM6", "MKpVJkNW", "qM1cNBy1", "SN18yTbL", "76r0F5rH", "PJtZq0qV", "YqCYBcZG", "8ctvfwJ8"]; 
+let photos_Stage  = ["MZbm8mGD"]; 
+let photos_Decor  = ["vBx2zgLF", "KzhB61hF",];
+
+const photoLibrary = {
+    "3rs5P7dS": { 
+        tag: "永和國中", 
+        title: "57週年校慶 Truss結構", 
+        loc: "新北市永和區", 
+        images: ["https://i.postimg.cc/3rs5P7dS/image.jpg"],
+        desc: `2025/11/06  這次非常榮幸來到永和國中幫忙搭Truss，永和國中不愧是明星學校，學生們都非常有活力，校內設備和科系也非常多元，讓小編的青春回憶也漸漸浮現，想當年小編的國中是5566.......西街~~~~~噓！！\n#永和國中` 
+    },
+    "P5dcjqhX": { 
+        tag: "新北投捷運站廣場",
+        title: "捷運站市集3米帳篷佈置",
+        loc: "台北市北投區",
+        images: [
+            "https://i.postimg.cc/P5dcjqhX/image.jpg",
+            "https://i.postimg.cc/yYm5tRqx/image.jpg",
+            "https://i.postimg.cc/3x36Tw7r/image.jpg",
+            "https://i.postimg.cc/x1972dYT/image.jpg",
+            "https://i.postimg.cc/MpZsLrbm/image.jpg",
+            "https://i.postimg.cc/SxQZPt7d/image.jpg",
+            "https://i.postimg.cc/XYN2PDcH/image.jpg"
+        ],
+        desc: `今天天氣超~~~~好der啦~~，我們來到新北投捷運站搭我們最引以為傲的3米帳，看看那白如皎月的頂棚，品質維護和安全性就是我們最大的堅持！ #新北投捷運站` 
+    },
+    "RhzdLPZN": { 
+        tag: "新竹中油", 
+        title: "中油場地規劃工程", 
+        loc: "新竹市東區", 
+        images: ["https://i.postimg.cc/RhzdLPZN/image.jpg",
+                 "https://i.postimg.cc/XJ5xFM4r/永昌_新竹中油_3米白_進場.jpg",
+                 "https://i.postimg.cc/TwbQm8f5/永昌_新竹中油_3米白_進場2.jpg",
+                 "https://i.postimg.cc/kGdsvjgg/永昌_新竹中油_6米白_進場.jpg",
+                 "https://i.postimg.cc/gjPsHM2w/永昌_新竹中油_Truss_進場2.jpg"
+        ],
+        desc: `連中油大大都和我們合作了！~~~~太港動惹~~~這場好多東西，有Truss、6米帳、3米帳....還有折疊椅那些~~~大加快放大看看我們的帳篷，484真的非~~~常乾淨呢? #新竹中油` 
+    },
+    "XYgRGCxL": { 
+        tag: "晶華酒店", 
+        title: "桃園機場論壇 Truss結構", 
+        loc: "台北市中山區", 
+        images: ["https://i.postimg.cc/XYgRGCxL/image.jpg",
+                 "https://i.postimg.cc/MpYCMQtP/小龜晶華酒店_Truss_輸出_進場.jpg"
+        ],
+        desc: `2025桃園機場論壇，那個美美的光線和後面宛如牆面般堅固的Truss，就是我們的傑作喔~~~ #晶華酒店` 
+    },
+    "vBx2zgLF": { 
+        tag: "市府轉運站", 
+        title: "Partition結構", 
+        loc: "台北市信義區", 
+        images: ["https://i.postimg.cc/vBx2zgLF/image.jpg",
+                 "https://i.postimg.cc/XJB18GKH/法克市府轉運站_Partition_進場.jpg",
+                 "https://i.postimg.cc/85fXHJBV/法克市府轉運站_Partition_進場4.jpg"
+        ],
+        desc: `什麼！？八毅也有在做Partition！？  您沒看錯，我們什麼都有涉略喔，雖然目前料還不多，但在技術上我們 is 絕對沒問題的，甚至曲面造型的我們也能完工喔~~~~~！ #市府轉運站` 
+    },
+    "VL8ZqNSy": { 
+        tag: "大直美堤",
+        title: "美堤花園圓拱帳工程",
+        loc: "台北市中山區",
+        images: ["https://i.postimg.cc/VL8ZqNSy/image.jpg"],
+        desc: `來大直搭圓拱帳嚕~~~~好久沒來到大直了，想當年小編還在這附近當過HTC的店員呢~~一眨眼又老10歲了(淚奔) #大直美堤花園` 
+    },
+    "Kv2pPY16": { 
+        tag: "中壢銀河廣場",
+        title: "夜間圓拱帳工程",
+        loc: "桃園市中壢區",
+        images: ["https://i.postimg.cc/Kv2pPY16/image.jpg",
+                 "https://i.postimg.cc/J4LYNhsT/中壢銀河廣場_圓拱帳進場.jpg",
+                 "https://i.postimg.cc/L6pQtsJr/中壢銀河廣場_圓拱帳進場3.jpg",
+        ],
+        desc: `兄Day們！！看看那霓虹燈~~~這樣的工作環境，動力都來了~~~真的是太美了！！我是說我們的圓拱帳 #中壢銀河廣場`  
+    },
+    "x1jsZFy6": { 
+        tag: "台北光點",
+        title: "blooming cafe Truss結構",
+        loc: "台北市中山區",
+        images: ["https://i.postimg.cc/x1jsZFy6/兆捷_光點Truss進場.jpg"],
+        desc: `這邊進過蠻多次的，上面的帳篷我們也能搭設喔~~看看這Truss和輸出，和背景是不是完美融合呢~ #光點台北`
+    },
+    "5yMgSP24": { 
+        tag: "台北福華大飯店",
+        title: "AClub15學術研討會Truss結構",
+        loc: "台北市大安區",
+        images: ["https://i.postimg.cc/5yMgSP24/俊明_Truss進場.jpg"],
+        desc: `Aclab15大家知道是什麼活動嗎?  是「第15屆亞洲乳酸菌研討會」喔！這是一場國際性的學術盛事，剛好這次輪到我們台灣主辦，現場有來自各國的學者，有芬蘭、有日本，還有各國頂尖的乳酸菌研究學者聚集於此，八毅公司真的很榮幸能成為此次活動廠商的一部份 #台北福華大飯店`
+    },
+     "mk9LxTzv": { 
+        tag: "台北戲棚",
+        title: "桌椅租賃",
+        loc: "台北市中山區",
+        images: ["https://i.postimg.cc/mk9LxTzv/tai-bei-xi-peng-zhuo-yi-jin-chang.jpg"],
+        desc: `我們來到台北戲棚送桌椅瞜~~~~~第一次看到戲棚內部，雖然只是照片，但還是掩飾不住小編的興奮感~~~~  真是太幸福惹~~~~ #台北戲棚`
+    },
+     "kGFc1xVC": { 
+        tag: "林口竹林寺",
+        title: "桌椅&舞台佈置",
+        loc: "新北市林口區",
+        images: ["https://i.postimg.cc/kGFc1xVC/日坊_林口竹林寺_黑金剛_進場.jpg",
+                 "https://i.postimg.cc/J0cq6byM/日坊_林口竹林寺_黑金剛_進場2.jpg"
+        ],
+        desc: `這邊是林口竹林山觀音寺，進到莊嚴的聖地，瞬間感受到人類真的是很神奇的生物，雖然渺小，卻能創造宏觀；就像前方的Truss、舞台，整齊劃一的黑金剛折合椅，也是我們八毅盡棉薄之力搭設而成，希望主辦單位能看到我們的用心~~~ #林口竹林山觀音寺`
+    },
+     "L6WTrsVV": { 
+        tag: "瑞芳地政事務所",
+        title: "圓拱帳進場",
+        loc: "新北市瑞芳區",
+        images: ["https://i.postimg.cc/L6WTrsVV/rui-fang-de-zheng-shi-wu-suo-yuan-gong-zhang-jin-chang.jpg",
+                 "https://i.postimg.cc/ZK4j9DgC/傳動_圓拱帳_進場2.jpg"
+        ],
+        desc: `這是瑞芳地政事務所暨衛生所聯合辦公廳舍興建工程動土儀式喔，這圓拱帳真的好大座，真的很佩服外場的兄Day們，怎麼有辦法搭得起來~~~實在是太厲害惹~~~~#瑞芳地政事務所`
+    },
+     "MK551m2x": { 
+        tag: "土城新理想團隊",
+        title: "沙發進場",
+        loc: "新北市土城區",
+        images: ["https://i.postimg.cc/MK551m2x/鑫創土城_單人沙發_進場.jpg"],
+        desc: `今天來到一個傷心地~~~我們新理想行銷團隊負責的土城建案~~~看著這些房子，沒一間買得起，只能對著鏡子說對不起....還好至少還吃得起 晚點回家坐在一樣的單人沙發，邊吃邊追劇~~  喔  ！ 對惹！我們這邊是搭Truss還有這兩張沙發喔，漂亮8~~~ #新理想行銷團隊`
+    },
+     "bvt1VQM6": { 
+        tag: "水樣啵啵廣場",
+        title: "3米帳佈置&Truss&牌樓工程&椅子租賃",
+        loc: "新北市新莊區",
+        images: ["https://i.postimg.cc/nzfByXft/黎國際_三重水樣啵啵_點心椅進場.jpg",
+                 "https://i.postimg.cc/cHGwpvy2/黎國際_三重水樣啵啵_黑金剛進場.jpg",
+                 "https://i.postimg.cc/LXFLcJKW/黎國際_三重水樣啵啵_Trus進場2.jpg",
+                 "https://i.postimg.cc/HLybvQKF/黎國際_三重水樣啵啵_Truss進場.jpg",
+                 "https://i.postimg.cc/mrH7pQq6/黎國際_三重水樣啵啵_6米白進場.jpg",
+                 "https://i.postimg.cc/bvt1VQM6/黎國際_三重水樣啵啵_3米白進場7.jpg",
+                 "https://i.postimg.cc/3wv2fg6F/黎國際_三重水樣啵啵_3米白進場6.jpg",
+                 "https://i.postimg.cc/TPDnNrSD/黎國際_三重水樣啵啵_3米白進場4.jpg",
+                 "https://i.postimg.cc/8C6LXh3J/黎國際_三重水樣啵啵_3米白進場3.jpg"
+               ],
+        desc: `這邊是三重水樣啵啵廣場，聽名字是不是很可愛呢 ? 感覺好像隨時會出現以前寶可夢的波比一樣  大家有看到我們的圍布嗎 ? 和我們的帳篷一樣乾乾淨淨，還有Truss，這麼大組一樣難不倒我們，甚至可以從設計階段一手包辦喔，大家有想找活動廠商的話 : 找八毅！！包您滿意！！ #水樣啵啵廣場`
+    },
+     "fTgGBXgN": { 
+        tag: "萬豪酒店",
+        title: "Truss結構",
+        loc: "台北市中山區",
+        images: ["https://i.postimg.cc/fTgGBXgN/zhao-jie-wan-hao-jiu-dian8F-Truss-jin-chang.jpg",
+                 "https://i.postimg.cc/L60cNf02/兆捷_萬豪酒店8F_Truss進場2.jpg"
+        ],
+        desc: `大家快看快看，這是我們去萬豪酒店搭的，小編看不出這是什麼造型，所以拉多一點人來看，看有沒有人看出端倪 我們外場人員無所不能~~~ #萬豪酒店`
+    },
+     "MKpVJkNW": { 
+        tag: "湖口市場",
+        title: "圓拱帳工程",
+        loc: "新竹縣湖口鄉",
+        images: ["https://i.postimg.cc/MKpVJkNW/永昌_湖口_圓拱帳_進場2.jpg",
+                 "https://i.postimg.cc/153w1x28/永昌_湖口_圓拱帳_進場4.jpg",
+                 "https://i.postimg.cc/BQnHfWkv/永昌_湖口_圓拱帳_進場3.jpg",
+                 "https://i.postimg.cc/VLknPyp8/永昌_湖口_圓拱帳_進場.jpg"               
+        ],
+        desc: `跑來新竹湖口市場了，我們跑來搭圓拱帳和鋪地毯，可惜小編不能跟，沒法去吃好料的 #新竹湖口市場`
+    },
+     "JzdQ27hr": { 
+        tag: "礁溪高爾夫球場",
+        title: "Truss結構",
+        loc: "宜蘭縣礁溪鄉",
+        images: ["https://i.postimg.cc/JzdQ27hr/鑫創_礁溪高爾夫球場_Truss_進場.jpg"],
+        desc: `同一天有湖口也有礁溪，厲害吧~~~ 這組Truss搭的真漂亮，根背景完美融合，毫無違和感，而且它地面高低起伏很大，能夠搭這麼平著實不簡單啊~~~~#礁溪高爾夫球場`
+    },
+     "T29PC76C": { 
+        tag: "松菸",
+        title: "黑金剛摺疊椅租賃",
+        loc: "台北市信義區",
+        images: ["https://i.postimg.cc/T29PC76C/song-yan-hei-jin-gang-zhe-die-yi-jin-chang.jpg",
+                 "https://i.postimg.cc/GpWxbMGc/奧瑞_松菸2號倉庫_會議桌_進場.jpg"
+        ],
+        desc: `松菸也有我們的局耶~~雖然只是進少少的桌椅，但相信以我們的堅持和品質，再過不久，肯定會出到好幾台車的量~~~~(期待)`
+    },
+     "MZbm8mGD": { 
+        tag: "林口竹林寺",
+        title: "竹林寺圓拱帳&Truss帳&舞台&3米帳佈置",
+        loc: "新北市林口區",
+        images: ["https://i.postimg.cc/MZbm8mGD/日坊_竹林山觀音寺_舞台_進場2.jpg",
+                 "https://i.postimg.cc/fWjfhfbx/日坊_竹林山觀音寺_舞台_進場.jpg",
+                 "https://i.postimg.cc/L5Rk1nxZ/日坊_竹林山觀音寺_3米紅白_進場.jpg",
+                 "https://i.postimg.cc/66LfNfQZ/日坊_竹林山觀音寺_會議桌_點心椅_進場.jpg",
+                 "https://i.postimg.cc/rsJ1CMbV/日坊_竹林山觀音寺_帝王帳_進場2.jpg",
+                 "https://i.postimg.cc/90pdtCSX/日坊_竹林山觀音寺_帝王帳_進場.jpg",
+                 "https://i.postimg.cc/sxcY9s8y/日坊_竹林山觀音寺_圓拱帳_進場3.jpg",
+                 "https://i.postimg.cc/yxPmXsGM/日坊_竹林山觀音寺_Truss帳_進場2.jpg",
+                 "https://i.postimg.cc/yxPmXsGv/日坊_竹林山觀音寺_Truss帳_進場.jpg",
+                 "https://i.postimg.cc/Bbs5KXmd/日坊_竹林山觀音寺_Truss_進場2.jpg",
+                 "https://i.postimg.cc/tJ53tpck/日坊_竹林山觀音寺_Truss_進場.jpg",
+                 "https://i.postimg.cc/fyZ79J8r/日坊_竹林山觀音寺_3米紅白_進場7.jpg",
+                 "https://i.postimg.cc/3N7jvdtL/日坊_竹林山觀音寺_3米紅白_進場6.jpg",
+                 "https://i.postimg.cc/yxBhZkLT/日坊_竹林山觀音寺_3米紅白_進場5.jpg",
+                 "https://i.postimg.cc/D0FQX8xd/日坊_竹林山觀音寺_3米紅白_進場4.jpg",
+                 "https://i.postimg.cc/C5YCqzcC/日坊_竹林山觀音寺_3米紅白_進場3.jpg",
+                 "https://i.postimg.cc/T1GjDptg/日坊_竹林山觀音寺_3米紅白_進場2.jpg",
+                 "https://i.postimg.cc/L5Rk1nxZ/日坊_竹林山觀音寺_3米紅白_進場.jpg"
+        ],
+        desc: `再次來到竹林山觀音寺，這次非常大場，感謝客戶對八毅團隊的信任，這次我們不僅僅有帳篷，還有Truss帳、舞台..等，甚至也有帝王帳，完工後大家都累癱了 #林口竹林山觀音寺`
+    },
+     "Nfs7G29h": { 
+        tag: "竹圍國小",
+        title: "Truss結構",
+        loc: "新北市淡水區",
+        images: ["https://i.postimg.cc/Nfs7G29h/延安_竹圍國小_Truss_進場.jpg",
+                 "https://i.postimg.cc/28kFjLbY/延安_竹圍國小_Truss_進場2.jpg"
+                 ],
+        desc: `竹圍國小的小口Truss，設計得非常可愛，很喜歡竹圍國小的校內風格，如果我可以再回到國小該有多好~~~ #竹圍國小`
+    },
+     "qM1cNBy1": { 
+        tag: "木柵動物園",
+        title: "3米帳篷&6米帳篷",
+        loc: "台北市文山區",
+        images: ["https://i.postimg.cc/qM1cNBy1/汎馬_木柵動物園_6米白進場2.jpg",
+                 "https://i.postimg.cc/QxfgFN1b/汎馬_木柵動物園_3米紅白進場.jpg",
+                 "https://i.postimg.cc/kXTN2MKy/汎馬_木柵動物園_3米白進場3.jpg",
+                 "https://i.postimg.cc/sDTPMf7P/汎馬_木柵動物園_3米白進場2.jpg",
+                 "https://i.postimg.cc/CLcCRMks/汎馬_木柵動物園_3米白進場.jpg"                 
+        ],
+        desc: `挖~~~~是我小時候最愛去的木柵動物園ㄝ，真是令人懷念，可惜這次不是來看動物的，是要來搭帳篷，我們這場有6米宮廷帳，也有3米帳，我們的帳篷真的無論何時看都是這麼乾淨，做場速度又快又安全！也難怪客戶一致給我們好評~~#木柵動物園`
+    },
+     "SN18yTbL": { 
+        tag: "中和國小",
+        title: "圓拱帳工程&3米帳篷&6米帳篷&桌椅紅龍",
+        loc: "新北市中和區",
+        images: ["https://i.postimg.cc/kgVSDQ7f/汎馬_中和國小_點心椅_進場.jpg",
+                 "https://i.postimg.cc/153w1x20/汎馬_中和國小_進場_全景.jpg",
+                 "https://i.postimg.cc/X71FVH0M/汎馬_中和國小_紅龍_進場.jpg",
+                 "https://i.postimg.cc/4N2tJLRq/汎馬_中和國小_會議桌_進場.jpg",
+                 "https://i.postimg.cc/jd3NsgYg/汎馬_中和國小_圓拱帳_進場.jpg",
+                 "https://i.postimg.cc/J4YJ16CY/汎馬_中和國小_Truss_進場.jpg",
+                 "https://i.postimg.cc/FsCc9WXG/汎馬_中和國小_6米紅白_進場2.jpg",
+                 "https://i.postimg.cc/SN18yTbL/汎馬_中和國小_6米紅白_進場.jpg",
+                 "https://i.postimg.cc/bNVbzCf1/汎馬_中和國小_3米紅白2_進場.jpg",
+                 "https://i.postimg.cc/Hsv5pZ1c/汎馬_中和國小_3米紅白_進場.jpg"
+        ],
+        desc: `晚上來進中和國小，感覺有點奇妙，以前小時候特別喜歡放學後又溜回來學校聚會，長大後一樣是回來學校，只是變成工作了 人生其實真要說起來，也是蠻單純的呢~ #中和國小`
+    },
+    "KzhB61hF": { 
+        tag: "漢來飯店",
+        title: "高吧桌",
+        loc: "台北市南港區",
+        images: ["https://i.postimg.cc/V6PnxJPm/黎國際_漢來飯店_高8桌_進場2.jpg",
+                 "https://i.postimg.cc/KzhB61hF/黎國際_漢來飯店_高8桌_進場.jpg"
+        ],
+        desc: `晚上來進中和國小，感覺有點奇妙，以前小時候特別喜歡放學後又溜回來學校聚會，長大後一樣是回來學校，只是變成工作了 人生其實真要說起來，也是蠻單純的呢~ #中和國小`
+    },
+    "NMvm3Kvg": { 
+        tag: "水樣啵啵廣場",
+        title: "桌椅租賃",
+        loc: "新北市新莊區",
+        images: ["https://i.postimg.cc/NMvm3Kvg/黎國際_水樣啵啵廣場_會議桌_點心椅_補送.jpg"],
+        desc: `又來到水樣啵啵送桌椅了，可惜這次還是沒有看到胖丁  #水樣啵啵廣場`
+    },
+    "8ctvfwJ8": { 
+        tag: "大都會公園",
+        title: "3米帳篷&桌椅",
+        loc: "新北市新莊區",
+        images: ["https://i.postimg.cc/2jwhtjcj/康映_大都會公園_點心椅_進場.jpg",
+                 "https://i.postimg.cc/dQBrfQHv/康映_大都會公園_會議桌_點心椅_進場2.jpg",
+                 "https://i.postimg.cc/d34CZnkD/康映_大都會公園_3米紅白_進場7.jpg",
+                 "https://i.postimg.cc/8ctvfwJ8/康映_大都會公園_3米紅白_進場3.jpg",
+                 "https://i.postimg.cc/8ctvfwJV/康映_大都會公園_3米紅白_進場2.jpg",
+                 "https://i.postimg.cc/D0BG45Wt/康映_大都會公園_3米紅白_進場.jpg"         
+        ],
+        desc: `嗚ㄚㄚㄚㄚㄚ~~~~~終於來到大都會公園了，好久沒呼吸新鮮空氣，這邊就在我們公司附近，但一直都沒空來，能出來踏青實在是太好了，這邊除了圓拱帳，還有桌椅那些，說真的看外勤人員作業感覺非常不好搭，真的是辛苦了，大家都非常了不起！！#新北大都會公園`
+    },
+    "76r0F5rH": { 
+        tag: "萬華金義宮",
+        title: "屋型帳&桌椅",
+        loc: "台北市萬華區",
+        images: ["https://i.postimg.cc/76r0F5rH/賢哥_萬華金義宮_3米6紅進場.jpg",
+                 "https://i.postimg.cc/C1pk3RpK/賢哥_萬華金義宮_點心椅進場.jpg"         
+        ],
+        desc: `我們這次在艋舺金義宮喔！地址是:台北市萬華區梧州街2巷6號喔，沒辦法定位，大家如果要來拜拜不要跑錯地方瞜~~  這邊搭了2頂屋型帳還有一些點心椅，希望活動一切平安順利 #艋舺金義宮`
+    },
+     "PJtZq0qV": { 
+        tag: "華山1914文創園區",
+        title: "圓拱帳工程",
+        loc: "台北市中正區",
+        images: ["https://i.postimg.cc/PJtZq0qV/千宇_華山_圓拱帳_進場2.jpg",
+                 "https://i.postimg.cc/Wz2r4x49/千宇_華山_圓拱帳_進場.jpg",
+                 "https://i.postimg.cc/kGfSRwVp/千宇_華山_圓拱帳_進場4.jpg",
+                 "https://i.postimg.cc/vTQ9mCmC/千宇_華山_圓拱帳_進場3.jpg"         
+        ],
+        desc: `在古色古香的華山1914搭圓拱帳，這種機會真的是不常有，雖然看起來和背景有點違和，但也凸顯了時間雖然慢慢帶走了人類和建築的外貌，卻帶不走源自生命的活力，只要活著，就有無限可能 #華山1914文化創意產業園區`
+    },
+    "PJtZq0qV": { 
+        tag: "華山1914文創園區",
+        title: "圓拱帳工程",
+        loc: "台北市中正區",
+        images: ["https://i.postimg.cc/QCX5MvMQ/兆捷_萬華_Truss牌樓_進場3.jpg",
+                 "https://i.postimg.cc/Kz7BxmmQ/兆捷_萬華_Truss牌樓_進場2.jpg",
+                 "https://i.postimg.cc/505Lbffg/兆捷_萬華_Truss牌樓_進場.jpg",
+                 "https://i.postimg.cc/XJKd4nnF/兆捷_萬華_3米白進場7.jpg",
+                 "https://i.postimg.cc/zBwK8qqC/兆捷_萬華_6米白_進場.jpg",
+                 "https://i.postimg.cc/3RjmY33k/兆捷_萬華_3米白進場6.jpg",
+                 "https://i.postimg.cc/Hx0XdTTj/兆捷_萬華_3米白進場5.jpg",
+                 "https://i.postimg.cc/505Lbff0/兆捷_萬華_3米白進場4.jpg",
+                 "https://i.postimg.cc/rm2xBD2K/兆捷_萬華_3米白進場.jpg",
+                 "https://i.postimg.cc/wv5Lg99j/兆捷_萬華_3米白進場3.jpg",
+                 "https://i.postimg.cc/SsLCkmmq/兆捷_萬華_3米白進場2.jpg"
+        ],
+        desc: `非常開心，這次八毅有幸能為艋舺大鬧熱活動盡一份心力，這些輸出和背景，搭配艋舺街道，真的非常有氛圍，會給人一種很放鬆的感覺，彷彿走入時空隧道般，回到那個70年，大家一起聚在街邊看表演，時間到了家裡會傳出麵香的純樸年代，大家有空一定要來參加活動喔~~~ #艋舺大鬧熱 #艋舺有嘻哈`
+    },
+    "Y23YP2XZ": { 
+        tag: "大都會公園",
+        title: "圓拱帳工程",
+        loc: "新北市新莊區",
+        images: ["https://i.postimg.cc/h4rTY4yF/康映_大都會公園_圓拱帳_進場8.jpg",
+                 "https://i.postimg.cc/Y23YP2XZ/康映_大都會公園_圓拱帳_進場7.jpg",
+                 "https://i.postimg.cc/J7qZF7TT/康映_大都會公園_圓拱帳_進場6.jpg",
+                 "https://i.postimg.cc/tR5WcRr5/康映_大都會公園_圓拱帳_進場5.jpg",
+                 "https://i.postimg.cc/BZgHzZhC/康映_大都會公園_圓拱帳_進場4.jpg",
+                 "https://i.postimg.cc/wM0NRFym/康映_大都會公園_圓拱帳_進場3.jpg"
+        ],
+        desc: `再次回到大都會公園，感謝客戶的信任，讓我們的堅持能有成果，從白天忙到半夜，就是為了給顧客最好、最安全的活動空間，最乾淨舒適的外觀，這就是八毅，公司培育出的能力，讓我們擁有相同的DNA，呈現最完美的品質 #大都會公園`
+    },
+    "153w1x21": { 
+        tag: "濟安宮",
+        title: "桌椅租賃",
+        loc: "新北市樹林區",
+        images: ["https://i.postimg.cc/153w1x21/冠宏_樹林濟安宮_會議桌_黑金剛_進場.jpg"],
+        desc: `來濟安宮送桌椅摟~~我們很常來這邊，小編家也住附近而已
+        ，只是來送八毅的東西還是第一次，我們的桌椅數量蠻多的，不僅卡榫那些都完好無損，外觀也都乾乾淨淨的，歡迎有需要的冰u們跟八毅預約喔~~~~~#樹林濟安宮`
+    },
+    "YqCYBcZG": { 
+        tag: "湖口市場",
+        title: "圓拱帳工程",
+        loc: "新竹縣湖口鄉",
+        images: ["https://i.postimg.cc/YqCYBcZG/永昌_湖口_圓拱帳_進場5.jpg",
+                 "https://i.postimg.cc/HskX1GRb/永昌_湖口_圓拱帳_進場6.jpg"
+        ],
+        desc: `最近真的好常跑湖口，這邊真的很舒服，天氣又好，來這搭圓拱帳感覺真的很好。大家有注意到圓拱帳前面有支路燈嗎 ? 這部份當初在規劃就有考量進去瞜~~~所以我們連頂棚都選好尺寸了，畢竟湖口一趟真的不近，我們一定要細心再細心，才能變得更專業、更有效率~~~ #新竹湖口`
+    },
+    "GhJmRp8C": { 
+        tag: "永慶房屋南港店",
+        title: "桌椅租賃",
+        loc: "台北市南港區",
+        images: ["https://i.postimg.cc/GhJmRp8C/yong-qing-fang-wu-nan-gang-hui-yi-zhuo-dian-xin-yi-jin-chang.jpg"],
+        desc: `今天來送南港永慶房屋的桌椅，感謝永慶房屋一直支持我們，三不五時就發工作機會給我們 #永慶房屋南港店`
+    },
+};
+
+    const balloonUrls = [
+    "https://i.postimg.cc/PrJxfRxs/1965927-0.jpg",
+    "https://i.postimg.cc/NfFMGzMv/1981332-0.jpg",
+    "https://i.postimg.cc/QxCtNyth/1981333-0.jpg",
+    "https://i.postimg.cc/L68qYsxN/1981334-0.jpg",
+    "https://i.postimg.cc/kXgV65Tw/1981335.jpg",
+    "https://i.postimg.cc/RVZ360gd/1981336.jpg",
+    "https://i.postimg.cc/bNwGDvmm/1981337.jpg",
+    "https://i.postimg.cc/J4zyDhpF/1981338.jpg",
+    "https://i.postimg.cc/J4zyDhpg/1981339.jpg",
+    "https://i.postimg.cc/YqC4GSdZ/1981340.jpg",
+    "https://i.postimg.cc/28Sqb5Hp/1981341.jpg",
+    "https://i.postimg.cc/J4zyDhT8/1981342.jpg",
+    "https://i.postimg.cc/RVZ360Pv/1981343.jpg",
+    "https://i.postimg.cc/jdSWwj8s/1981344.jpg",
+    "https://i.postimg.cc/vH24Wdjd/1981345.jpg",
+    "https://i.postimg.cc/J4YsbWgM/1981346.jpg",
+    "https://i.postimg.cc/QxYFprP8/1981347.jpg",
+    "https://i.postimg.cc/jd3Dzr9R/1981348.jpg",
+    "https://i.postimg.cc/HsvrQCKn/1981349.jpg",
+    "https://i.postimg.cc/TYNKrXSh/1981350.jpg",
+    "https://i.postimg.cc/Ghg4k1NH/1981351.jpg",
+    "https://i.postimg.cc/L6QJzM7J/1981429.jpg",
+    "https://i.postimg.cc/J4YsbWgX/1981430.jpg",
+    "https://i.postimg.cc/VLZJjcTj/1981431.jpg",
+    "https://i.postimg.cc/RVpWcz81/1981432.jpg",
+    "https://i.postimg.cc/JzyGx2Vs/1981433.jpg",
+    "https://i.postimg.cc/t41YkMQ6/1981434.jpg",
+    "https://i.postimg.cc/cLKrhbyw/1981435.jpg",
+    "https://i.postimg.cc/Bn8XpV9T/1981436-0.jpg",
+    "https://i.postimg.cc/pL9pC6bY/1981437-0.jpg",
+    "https://i.postimg.cc/JzyGx2Vp/1981438.jpg",
+    "https://i.postimg.cc/52H6gRd7/1981439.jpg",
+    "https://i.postimg.cc/RZ3NdD5p/1981440.jpg",
+    "https://i.postimg.cc/bwGsgBcF/1981441.jpg",
+    "https://i.postimg.cc/4xrnSQs8/1981442.jpg",
+    "https://i.postimg.cc/kgkDpvqY/1981443.jpg",
+    "https://i.postimg.cc/3xyd1c56/1981444.jpg",
+    "https://i.postimg.cc/Vk35VWmp/1981445.jpg",
+    "https://i.postimg.cc/3xPWcFYz/1981446.jpg",
+    "https://i.postimg.cc/x1Wq439S/1981447.jpg",
+    "https://i.postimg.cc/bwKdB9qP/1981448.jpg",
+    "https://i.postimg.cc/jSGCF4RK/1981635-0.jpg",
+    "https://i.postimg.cc/qv9g5xpp/1981636-0.jpg",
+    "https://i.postimg.cc/mg0h5yTr/1981637-0.jpg",
+    "https://i.postimg.cc/3xPWcF3d/1981638-0.jpg",
+    "https://i.postimg.cc/N0mLq20B/1981639-0.jpg",
+    "https://i.postimg.cc/JhZtVHhm/1981640-0.jpg",
+    "https://i.postimg.cc/25h3RL58/1981641-0.jpg",
+    "https://i.postimg.cc/s271dG2g/1981642-0.jpg",
+    "https://i.postimg.cc/rpxzXRpm/1981643-0.jpg",
+    "https://i.postimg.cc/VNn5Q0NS/1981644-0.jpg",
+    "https://i.postimg.cc/wBL38RBM/1981645-0.jpg",
+    "https://i.postimg.cc/vmfDFxm6/1981646-0.jpg",
+    "https://i.postimg.cc/pdzyb5d8/1981647-0.jpg",
+    "https://i.postimg.cc/DzLmk4zq/1981648-0.jpg",
+    "https://i.postimg.cc/mrChf1rY/1981649-0.jpg",
+    "https://i.postimg.cc/QM1VGKMJ/1981650-0.jpg",
+    "https://i.postimg.cc/rpxzXRpQ/1981651-0.jpg",
+    "https://i.postimg.cc/NMtFgGy1/1981652-0.jpg",
+    "https://i.postimg.cc/V6wvYsSF/1981653-0.jpg",
+    "https://i.postimg.cc/LXS5H4qW/1981654-0.jpg",
+    "https://i.postimg.cc/k4CGnMVp/1981655-0.jpg",
+    "https://i.postimg.cc/hjnvS4JC/1981657-0.jpg",
+    "https://i.postimg.cc/mD4kbZcq/1981658-0.jpg",
+    "https://i.postimg.cc/d1F3qQkP/1981659-0.jpg",
+    "https://i.postimg.cc/Twx1R2Lv/1981660-0.jpg",
+    "https://i.postimg.cc/26Yyzjbf/1981661-0.jpg",
+    "https://i.postimg.cc/wvkv3KJr/1981662-0.jpg",
+    "https://i.postimg.cc/Y9x9jcgV/1981663-0.jpg",
+    "https://i.postimg.cc/85b5s8Wq/1981664-0.jpg",
+    "https://i.postimg.cc/sXJX1F7z/1981665-0.jpg",
+    "https://i.postimg.cc/HxtxjGXp/1981666-0.jpg",
+    "https://i.postimg.cc/xCPCqrM8/1981667-0.jpg",
+    "https://i.postimg.cc/Kz5z4XBz/1981668-0.jpg",
+    "https://i.postimg.cc/W373tRgt/1981669-0.jpg",
+    "https://i.postimg.cc/85b5s8M7/1981670-0.jpg",
+    "https://i.postimg.cc/76N6bv02/1981671-0.jpg",
+    "https://i.postimg.cc/j5h5CVPJ/1981672-0.jpg",
+    "https://i.postimg.cc/7hYL2Bnh/1981673-0.jpg",
+    "https://i.postimg.cc/Xq7vC2kr/1981674-0.jpg",
+    "https://i.postimg.cc/BbQvKhBL/1981675-0.jpg",
+    "https://i.postimg.cc/MHKGQsmf/1981676-0.jpg",
+    "https://i.postimg.cc/fyTb9Hfv/1981677-0.jpg",
+    "https://i.postimg.cc/J04hkT5p/1981678-0.jpg",
+    "https://i.postimg.cc/7hYL2BnB/1981679-0.jpg",
+    "https://i.postimg.cc/90Ff7xYg/1981680-0.jpg",
+    "https://i.postimg.cc/D0jwdqxQ/1981681-0.jpg",
+    "https://i.postimg.cc/3NSxCgtZ/1981682-0.jpg",
+    "https://i.postimg.cc/zvtGSnxj/1981683-0.jpg",
+    "https://i.postimg.cc/NFJj71db/1981684-0.jpg",
+    "https://i.postimg.cc/QC4dkpfm/1981685-0.jpg",
+    "https://i.postimg.cc/Y0nCf1ds/1981686-0.jpg",
+    "https://i.postimg.cc/Kjq8rn0W/1981687-0.jpg",
+    "https://i.postimg.cc/NFJj71dS/1981688-0.jpg",
+    "https://i.postimg.cc/sx6g9pTb/1981689-0.jpg",
+    "https://i.postimg.cc/qqbvX8m0/1981690-0.jpg",
+    "https://i.postimg.cc/QC4dkp6h/1981691-0.jpg",
+    "https://i.postimg.cc/nrRhYvdH/1981692-0.jpg",
+    "https://i.postimg.cc/PJ35zm6X/1981693-0.jpg",
+    "https://i.postimg.cc/nV0rJJnQ/1981694-0.jpg",
+    "https://i.postimg.cc/ZYVnSSJv/1981695-0.jpg",
+    "https://i.postimg.cc/kMfGmm7S/1981696-0.jpg",
+    "https://i.postimg.cc/9XJ0hhcT/1981697-0.jpg",
+    "https://i.postimg.cc/h4pvBBK9/1981698-0.jpg",
+    "https://i.postimg.cc/wx0Mpp9L/1981699-0.jpg",
+    "https://i.postimg.cc/c1XCSSdT/1981700-0.jpg",
+    "https://i.postimg.cc/7PmhkkqB/1981701-0.jpg",
+    "https://i.postimg.cc/fWByNNM2/1981702-0.jpg",
+    "https://i.postimg.cc/MZdHSSzr/1981703-0.jpg",
+    "https://i.postimg.cc/9XJ0hhcK/1981704-0.jpg",
+    "https://i.postimg.cc/fWByNNM1/1981705-0.jpg",
+    "https://i.postimg.cc/pVqrHHPg/1981706-0.jpg",
+    "https://i.postimg.cc/T2C166RM/1981707-0.jpg",
+    "https://i.postimg.cc/SNRsQvKZ/1981708-0.jpg",
+    "https://i.postimg.cc/7Yh6PWLt/1981709-0.jpg",
+    "https://i.postimg.cc/fTyLWrbP/1981710-0.jpg",
+    "https://i.postimg.cc/28y6jK5M/1981711-0.jpg",
+    "https://i.postimg.cc/3JNRrcw6/1981712-0.jpg",
+    "https://i.postimg.cc/MKHTZFGg/1981713-0.jpg",
+    "https://i.postimg.cc/5Ny09R0c/1981714-0.jpg"
+];
+
+// 3. 執行自動平鋪邏輯（這要在物件定義之外跑）
+balloonUrls.forEach((url, index) => {
+    const id = `ball_item_${index}`;
+    photoLibrary[id] = {
+        tag: "氣球佈置",
+        title: `佈置成品 ${index + 1}`,
+        loc: "精選案例",
+        images: [url],
+        desc: "八毅活動工程精選佈置作品。"
+    };
+    // 自動塞入分類陣列
+    photos_Decor.push(id);
+});
+
+
+// --- 圖片加速預載功能 (放在 photoLibrary 定義之後) ---
+(function() {
+    console.log("🚀 啟動圖片加速預載...");
+
+    const allData = Object.values(photoLibrary);
+    
+    // 1. 優先預載：每個案例的第一張圖（讓縮圖秒出）
+    allData.forEach(data => {
+        if (data.images && data.images.length > 0) {
+            const firstImg = new Image();
+            firstImg.src = data.images[0];
+        }
+    });
+
+    // 2. 閒置預載：當瀏覽器有空時，下載剩下的圖片
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            allData.forEach(data => {
+                if (data.images && data.images.length > 1) {
+                    for (let i = 1; i < data.images.length; i++) {
+                        const nextImg = new Image();
+                        nextImg.src = data.images[i];
+                    }
+                }
+            });
+            console.log("✅ 所有圖片緩存指令已發送");
+        }, 2000); // 網頁開啟 2 秒後才開始抓剩下的，不搶頻寬
+    });
+})();
+
+  
+// ==========================================
+// 2. 工具函式
+// ==========================================
+let currentProject = null;
+let currentImgIdx = 0;
+
+function switchModel(productId, element) {
+    const viewer = document.getElementById('main-viewer');
+    const title = document.getElementById('title-table');
+    const specs = document.getElementById('specs-table');
+    const btns = document.querySelectorAll('#model-list button');
+    const data = modelData[productId];
+    if (data && viewer) {
+        viewer.src = data.src;
+        title.innerText = data.title;
+        specs.innerHTML = data.specs;
+    }
+    if (element) {
+        btns.forEach(btn => btn.classList.remove('active'));
+        element.classList.add('active');
+    }
+}
+
+function loadGallery(id, list) {
+    const el = document.getElementById(id);
+    if (!el || !list) return;
+    el.innerHTML = list.map(projectId => {
+        const info = photoLibrary[projectId];
+        if (!info) return '';
+        const coverUrl = info.images[0];
+        return `
+            <div class="col-6 col-md-4 mb-4">
+                <div class="album-img-wrapper shadow-sm" onclick="openProjectGallery('${projectId}')">
+                    <span class="photo-tag">${info.tag} (${info.images.length}張)</span>
+                    <img src="${coverUrl}" class="album-img" loading="lazy">
+                </div>
+            </div>`;
+    }).join('');
+}
+
+function openProjectGallery(projectId) {
+    currentProject = photoLibrary[projectId];
+    if (!currentProject) return;
+    currentImgIdx = 0;
+    updateLightbox();
+}
+function updateLightbox() {
+    const lb = document.getElementById('imgLightbox');
+    const info = currentProject;
+    const url = info.images[currentImgIdx];
+    const formattedDesc = info.desc.replace(/\n/g, '<br>');
+
+    lb.innerHTML = `
+        <div class="lightbox-content" onclick="event.stopPropagation()">
+            <button class="close-btn" onclick="closeLightbox()">✕</button>
+            
+            <div class="lightbox-image-side">
+                <img src="${url}" id="target-img" class="photo-fade">
+                
+                ${info.images.length > 1 ? `
+                    <div class="nav-controls">
+                        <button class="nav-btn prev" onclick="event.stopPropagation(); changeImage(-1)">❮</button>
+                        <button class="nav-btn next" onclick="event.stopPropagation(); changeImage(1)">❯</button>
+                    </div>
+                    <div class="img-counter">
+                        <span class="current">${currentImgIdx + 1}</span>
+                        <span class="divider">/</span>
+                        <span class="total">${info.images.length}</span>
+                    </div>
+                ` : ''}
+            </div>
+            
+            <div class="lightbox-info-side">
+                <h2 class="brand-red-text">${info.title}</h2>
+                <p class="location-tag"><i class="bi bi-geo-alt-fill me-1"></i>${info.loc}</p>
+                <div class="divider"></div>
+                <div class="info-body">
+                    <p>${formattedDesc}</p>
+                </div>
+                <div style="margin-top: auto;">
+                    <button class="btn btn-outline-light btn-sm w-100" onclick="closeLightbox()">返回相簿</button>
+                </div>
+            </div>
+        </div>`;
+    
+    lb.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+     setTimeout(initSwipe, 100);
+}
+
+function closeLightbox() {
+    const lb = document.getElementById('imgLightbox');
+    lb.style.display = 'none';
+    // 恢復背景捲動
+    document.body.style.overflow = 'auto';
+}
+
+
+function changeImage(step) {
+    if (!currentProject) return;
+
+    const imgElement = document.getElementById('target-img');
+    const counterElement = document.querySelector('.img-counter .current');
+
+    // 1. 先讓照片淡出 (變透明)
+    imgElement.classList.add('photo-hidden');
+
+    // 2. 等淡出動畫跑完 (約 300ms) 再換圖
+    setTimeout(() => {
+        // 更新索引
+        currentImgIdx += step;
+        if (currentImgIdx < 0) currentImgIdx = currentProject.images.length - 1;
+        if (currentImgIdx >= currentProject.images.length) currentImgIdx = 0;
+
+        const newSrc = currentProject.images[currentImgIdx];
+
+        // 更換圖片路徑
+        imgElement.src = newSrc;
+
+        // 當圖片「載入完成」後，再淡入
+        imgElement.onload = () => {
+            imgElement.classList.remove('photo-hidden');
+            if (counterElement) {
+                counterElement.innerText = currentImgIdx + 1;
+            }
+        };
+        
+        // 如果圖片已經在快取中，直接淡入
+        if (imgElement.complete) {
+            imgElement.classList.remove('photo-hidden');
+        }
+    }, 300); 
+}
+
+// ==========================================
+// 3. 核心執行區
+// ==========================================
+window.onload = function() {
+    loadGallery('gallery-1', photos_Tables);
+    loadGallery('gallery-2', photos_Truss);
+    loadGallery('gallery-3', photos_Tent);
+    loadGallery('gallery-4', photos_Stage);
+    loadGallery('gallery-5', photos_Decor);
+
+    const loader = document.getElementById('loading-screen');
+    if(loader) {
+        setTimeout(() => {
+            loader.style.opacity = '0';
+            setTimeout(() => { loader.style.display = 'none'; }, 800);
+        }, 1500); 
+    }
+};
+
+let touchStartX = 0;
+let touchEndX = 0;
+let isDragging = false;
+
+// 初始化滑動功能 (建議在頁面載入或 updateLightbox 後執行)
+function initSwipe() {
+    const slideArea = document.getElementById('target-img');
+    if (!slideArea) return;
+
+    // --- 手機觸控事件 ---
+    slideArea.addEventListener('touchstart', e => {
+        touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    slideArea.addEventListener('touchend', e => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+    }, { passive: true });
+
+    // --- 電腦滑鼠事件 ---
+    slideArea.addEventListener('mousedown', e => {
+        touchStartX = e.screenX;
+        isDragging = true;
+        e.preventDefault(); // 防止滑鼠拖曳圖片的預設行為
+    });
+
+    slideArea.addEventListener('mouseup', e => {
+        if (!isDragging) return;
+        touchEndX = e.screenX;
+        isDragging = false;
+        handleSwipe();
+    });
+
+    // 離開圖片範圍時取消拖曳狀態
+    slideArea.addEventListener('mouseleave', () => { isDragging = false; });
+}
+
+function handleSwipe() {
+    const swipeThreshold = 50; // 滑動超過 50px 才觸發換圖
+    const diff = touchStartX - touchEndX;
+
+    if (Math.abs(diff) > swipeThreshold) {
+        if (diff > 0) {
+            // 向左滑 -> 下一張
+            changeImage(1);
+        } else {
+            // 向右滑 -> 上一張
+            changeImage(-1);
+        }
+    }
+}
+
+// 1. 切換顯示模式
+function toggleMonitor(type) {
+    if (type === 'real') {
+        // 點擊 LIVE 實境時，顯示密碼遮罩
+        const overlay = document.getElementById('auth-overlay');
+        overlay.style.opacity = '1';
+        overlay.style.pointerEvents = 'auto';
+        
+        // 自動聚焦輸入框
+        setTimeout(() => document.getElementById('access-code').focus(), 500);
+    } else {
+        // 點擊 3D 實境，隱藏遮罩並顯示進度面板
+        hideAuth();
+        document.getElementById('progress-panel').style.display = 'none';
+        // 這裡可以放切換回 3D 的邏輯
+    }
+}
+
+// 2. 驗證密碼
+function checkAccess() {
+    const code = document.getElementById('access-code').value;
+    const errorMsg = document.getElementById('auth-error');
+    const panel = document.getElementById('progress-panel');
+    
+    // 設定你的密碼（手機號碼）
+    if (code === "0912345678") { 
+        hideAuth(); // 驗證成功，隱藏遮罩
+        panel.style.display = 'block'; // 顯示原本隱藏的進度條
+        errorMsg.style.display = 'none';
+        
+        // 讓按鈕切換顏色
+        document.getElementById('btn-real').classList.replace('btn-dark', 'btn-danger');
+        document.getElementById('btn-3d').classList.replace('btn-danger', 'btn-dark');
+    } else {
+        errorMsg.style.display = 'block';
+        document.getElementById('access-code').value = '';
+    }
+}
+
+// 3. 隱藏遮罩
+function hideAuth() {
+    const overlay = document.getElementById('auth-overlay');
+    overlay.style.opacity = '0';
+    overlay.style.pointerEvents = 'none';
+    document.getElementById('auth-error').style.display = 'none';
+    document.getElementById('access-code').value = '';
+}
+
+</script>
